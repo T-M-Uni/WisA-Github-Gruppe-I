@@ -25,16 +25,16 @@ deskr_metric <- function(x) {
 
 # deskr_factor: Funktion für deskriptive Statistiken für kategoriale Variablen
 # input: - x: kategorieller Vektor
-# output: - Liste asu Kennwerten fuer Kategorielle Daten
+# output: - Liste aus Kennwerten fuer Kategorielle Daten
 deskr_factor <- function(x) {
   if (!is.factor(x) && !is.character(x)) {
     stop("Die Variable muss kategorial (Faktor oder Charakter) sein.")
   }
   
-  # Häufigkeitstabelle
+  # Haeufigkeitstabelle
   freq_table <- table(x)
   
-  # Prozentsätze
+  # Prozentsaetze
   percentages <- prop.table(freq_table) * 100
   
   # Gleichverteilungstest
@@ -48,7 +48,7 @@ deskr_factor <- function(x) {
   # Ausgabe als Liste
   statistic <- list(
     Häufigkeit = freq_table,
-    Prozentsätze = percentages,
+    Prozentsaetze = percentages,
     Chi2 = unname(chi2$statistic),
     Chi2.p = chi2$p.value,
     Gini = gini_index
@@ -57,14 +57,22 @@ deskr_factor <- function(x) {
   return(statistic)
 }
 
-#weiß nicht ob die nötig ist, gibt ja schon prop.table, also falls wer ne bessere hat gerne einfügen
+# weiß nicht ob die noetig ist, gibt ja schon prop.table, also falls wer ne bessere hat gerne einfügen
 # Eine Funktion, die geeignete deskriptive bivariate Statistiken für den Zusammenhang zwischen zwei kategorialen Variablen berechnet ausgibt
-# tabelle mit Anteilen zutückgeben
+# tabelle mit Anteilen zurueckgeben
 bivariat_kategorial <- function(var1, var2) {
   tabelle <- table(var1, var2)
   
   prop_tabelle <- prop.table(tabelle, margin = 1)
-  return(prop_tabelle)
+  chi2 <- chisq.test(tabelle)
+  cramerV <- sqrt(chi2$statistic / (sum(tabelle)) * (min(nrow(tabelle))-1))
+
+  return(list(
+  probs = prop_tabelle,
+  chi2 = unname(chi2$statistic),
+  p = chi2$p.value,
+  cramerV = cramerV
+  ))
 }
 
 
@@ -113,7 +121,7 @@ bivariate_statistik <- function(data, metrische_var, dichotome_var) {
 
 
 
-#Eine Funktion, die eine geeignete Visualisierung von drei oder vier kategorialen Variablen erstellt
+# Eine Funktion, die eine geeignete Visualisierung von drei oder vier kategorialen Variablen erstellt
 
 visualize_categorical <- function(data, var1, var2, var3, var4 = NULL) {
   if (is.null(var4)) {
