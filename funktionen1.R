@@ -47,7 +47,7 @@ deskr_factor <- function(x) {
   
   # Ausgabe als Liste
   statistic <- list(
-    Häufigkeit = freq_table,
+    Haeufigkeit = freq_table,
     Prozentsaetze = percentages,
     Chi2 = unname(chi2$statistic),
     Chi2.p = chi2$p.value,
