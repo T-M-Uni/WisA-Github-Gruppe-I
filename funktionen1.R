@@ -20,7 +20,7 @@ deskr_metric <- function(x) {
     Quantile_75 = quantile(x, 0.75, na.rm = TRUE)
   )
   
-  return(statistik)
+  return(stats)
 }
 
 # deskr_factor: Funktion für deskriptive Statistiken für kategoriale Variablen
