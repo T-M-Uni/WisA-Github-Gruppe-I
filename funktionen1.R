@@ -158,3 +158,13 @@ visualize_categorical <- function(data, var1, var2, var3, var4 = NULL) {
 
 
 # Freiwillig: weitere zur Deskription und Visualisierung geeignete Funktionen
+
+# Funktion zur Berechnung der Korrelation zwischen zwei metrischen Variablen
+korrelation_metrisch <- function(df, var1, var2) {
+  if (!is.numeric(df[[var1]]) || !is.numeric(df[[var2]])) {
+    stop("Beide Variablen müssen metrisch sein.")
+  }
+  return(cor(df[[var1]], df[[var2]], use = "complete.obs"))
+}
+
+
