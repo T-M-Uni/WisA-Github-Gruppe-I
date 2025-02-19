@@ -167,4 +167,12 @@ korrelation_metrisch <- function(df, var1, var2) {
   return(cor(df[[var1]], df[[var2]], use = "complete.obs"))
 }
 
+# Funktion zur Erstellung eines Histogramms für eine metrische Variable
+histogram_metrisch <- function(df, var) {
+  if (!is.numeric(df[[var]])) {
+    stop("Die Variable muss metrisch sein.")
+  }
+  hist(df[[var]], main = paste("Histogramm von", var), xlab = var, col = "lightblue", border = "black")
+}
+
 
