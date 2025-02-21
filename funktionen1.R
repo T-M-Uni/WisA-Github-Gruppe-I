@@ -1,3 +1,5 @@
+install.packages("dplyr")
+library(dplyr)
 
 # deskr_metric: Funktion für deskriptive Statistiken für metrische Variablen
 # Input: - x: numerischer Vektor
@@ -66,12 +68,12 @@ bivariat_kategorial <- function(var1, var2) {
   prop_tabelle <- prop.table(tabelle, margin = 1)
   chi2 <- chisq.test(tabelle)
   cramerV <- sqrt(chi2$statistic / (sum(tabelle)) * (min(nrow(tabelle))-1))
-
+  
   return(list(
-  probs = prop_tabelle,
-  chi2 = unname(chi2$statistic),
-  p = chi2$p.value,
-  cramerV = cramerV
+    probs = prop_tabelle,
+    chi2 = unname(chi2$statistic),
+    p = chi2$p.value,
+    cramerV = cramerV
   ))
 }
 
@@ -79,31 +81,24 @@ bivariat_kategorial <- function(var1, var2) {
 # Eine Funktion, die geeignete deskriptive bivariate Statistiken für den Zusammengang zwischen einer metrischen und einer dichotomen Variablen berechnet und ausgibt
 
 bivariate_statistik <- function(data, metrische_var, dichotome_var) {
-
-  # zum sicherstellen dass die zweite Variable dichotom ist:
+  # Sicherstellen, dass die zweite Variable dichotom ist
   unique_values <- unique(data[[dichotome_var]])
   if (length(unique_values) != 2) {
     stop("Die zweite Variable muss dichotom sein.")
   }
   
-  # Deskriptive Statistiken Tabelle
-  stats <- data %>%
-    group_by(!!as.name(dichotome_var)) %>%
-    summarise(
-      Mean = mean(.data[[metrische_var]], na.rm = TRUE),
-      Median = median(.data[[metrische_var]], na.rm = TRUE),
-      SD = sd(.data[[metrische_var]], na.rm = TRUE),
-      Count = n()
-    )
-  
-  print(paste("Deskriptive bivariate Statistik für:", metrische_var, "und", dichotome_var))
-  print(stats)
+  # Deskriptive Statistiken Tabelle ohne %>%
+  stats <- summarise(
+    group_by(data, !!as.name(dichotome_var)),
+    Mean = mean(.data[[metrische_var]], na.rm = TRUE),
+    Median = median(.data[[metrische_var]], na.rm = TRUE),
+    SD = sd(.data[[metrische_var]], na.rm = TRUE),
+    Count = n()
+  )
   
   # Unterschied der Mittelwerte
   mittelwert_gruppen <- stats$Mean
   differenz_mittelwerte <- diff(mittelwert_gruppen)
-  
-  print(paste("Unterschied der Mittelwerte:", round(differenz_mittelwerte, 2)))
   
   # Berechnung Cohen's d
   gruppe_1 <- data[data[[dichotome_var]] == unique_values[1], ][[metrische_var]]
@@ -113,7 +108,13 @@ bivariate_statistik <- function(data, metrische_var, dichotome_var) {
   
   cohens_d <- differenz_mittelwerte / pooled_sd
   
-  print(paste("Cohen's d (Effektstärke):", round(cohens_d, 2)))
+  ergebnisse <- list(
+    Deskriptive_Statistiken = stats,
+    Mittelwertsunterschied = differenz_mittelwerte,
+    Cohens_d = cohens_d
+  )
+  
+  return(ergebnisse)
 }
 
 # Wenn ihr noch Ideen für andere Maße habt, die für diese Teilaufgabe relevant sein könnten, sagt gerne Bescheid, ich bin mir nicht ganz sicher ob ich alles abgedeckt habe
@@ -174,5 +175,4 @@ histogram_metrisch <- function(df, var) {
   }
   hist(df[[var]], main = paste("Histogramm von", var), xlab = var, col = "lightblue", border = "black")
 }
-
 
