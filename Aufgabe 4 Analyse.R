@@ -189,6 +189,37 @@ bivariate_statistik(titanic, "Fare", "Survived")
 # $Cohens_d
 # [1] 0.5047595
 
+# Ergänzung 4:
+bivariate_statistik(titanic, "Fare", "Sex")
+# $Deskriptive_Statistiken
+# A tibble: 2 × 5
+#  Sex     Mean Median    SD Count
+#  <chr>  <dbl>  <dbl> <dbl> <int>
+# 1 female  44.5   23    58.0   314
+# 2 male    25.5   10.5  43.1   577
+
+# $Mittelwertsunterschied
+# [1] -18.95592
+
+# $Cohens_d
+# [1] -0.3708785
+bivariat_kategorial(titanic$Pclass, titanic$Sex)
+#$probs
+#   var2
+#var1    female      male
+#   1 0.2932790 0.7067210
+#   2 0.4130435 0.5869565
+#   3 0.4351852 0.5648148
+
+#$chi2
+#[1] 16.9715
+
+#$p
+#[1] 0.0002063886
+
+#$cramerV
+#X-squared 
+#0.1951804 
 
 #5. Visualisierung: Histogramm des Ticketpreises
 histogram_metrisch(titanic, "Fare")
